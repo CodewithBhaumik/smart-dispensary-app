@@ -51,6 +51,8 @@ const ROLE_ICON: Record<Role, typeof Stethoscope> = {
   admin: ShieldCheck,
 };
 
+const ROLE_SHORT: Record<Role, string> = { student: 'Student', doctor: 'Doctor', staff: 'Staff', admin: 'Admin' };
+
 const ROLE_BLURB: Record<Role, string> = {
   student: 'Book, consult, request medicines',
   doctor: 'Queue, consultations, prescriptions',
@@ -241,7 +243,7 @@ export default function LoginPage() {
                       <span className="flex items-center gap-1.5">
                         <span className={cn('inline-flex items-center gap-1 rounded-full px-1.5 py-px text-[10px] font-semibold uppercase ring-1 ring-inset', ROLE_TONE[account.role])}>
                           <Icon className="size-3" />
-                          {ROLE_LABELS[account.role]}
+                          {ROLE_SHORT[account.role]}
                         </span>
                       </span>
                       <span className="mt-1 block truncate text-sm font-semibold text-slate-900">{account.name}</span>

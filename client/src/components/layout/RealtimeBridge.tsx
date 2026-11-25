@@ -18,7 +18,9 @@ export function RealtimeBridge() {
   // Remember when this tab last performed a mutation so we don't double-toast our own events.
   useEffect(() => {
     return qc.getMutationCache().subscribe((event) => {
-      if (event.type === 'updated' && event.mutation.state.status === 'success') lastOwnMutationAt = Date.now();
+      if (event.type !== 'added' && event.type !== 'updated') return;
+      const status = event.mutation.state.status;
+      if (status === 'pending' || status === 'success') lastOwnMutationAt = Date.now();
     });
   }, [qc]);
 
@@ -28,7 +30,8 @@ export function RealtimeBridge() {
 
   useSocketEvent<Notification>('notification:new', (n) => {
     void qc.invalidateQueries({ queryKey: ['notifications'] });
-    if (Date.now() - lastOwnMutationAt < 2500) return;
+    // Skip toasts caused by this tab's own action (the page already confirmed it).
+    if (qc.isMutating() > 0 || Date.now() - lastOwnMutationAt < 2500) return;
     const show = n.type === 'emergency' ? toast.warning : toast;
     show(n.title, {
       description: n.body,

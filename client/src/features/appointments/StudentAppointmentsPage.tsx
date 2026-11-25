@@ -14,6 +14,8 @@ import { partitionAppointments } from './utils';
 
 type TabKey = 'upcoming' | 'past' | 'cancelled';
 
+const TAB_LABELS: Record<TabKey, string> = { upcoming: 'Upcoming', past: 'Past', cancelled: 'Cancelled' };
+
 export default function StudentAppointmentsPage() {
   const [params, setParams] = useSearchParams();
   const { data, isLoading, isError, error, refetch } = useMyAppointments();
@@ -76,8 +78,8 @@ export default function StudentAppointmentsPage() {
         <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)} className="gap-5">
           <TabsList className="h-10 bg-white p-1 shadow-xs ring-1 ring-border">
             {(['upcoming', 'past', 'cancelled'] as TabKey[]).map((key) => (
-              <TabsTrigger key={key} value={key} className="h-8 px-3.5 capitalize data-[state=active]:bg-slate-900 data-[state=active]:text-white">
-                {key}
+              <TabsTrigger key={key} value={key} className="h-8 px-3.5 data-[state=active]:bg-slate-900 data-[state=active]:text-white">
+                {TAB_LABELS[key]}
                 <span className="ml-1 rounded-full bg-black/5 px-1.5 text-[11px] font-semibold tabular-nums in-data-[state=active]:bg-white/20">
                   {isLoading ? '–' : lists[key].length}
                 </span>

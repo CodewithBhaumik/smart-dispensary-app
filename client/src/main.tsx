@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')!).render(
         <TooltipProvider delayDuration={200}>
           <App />
           <Toaster
-            position="top-right"
+            position="top-center"
             richColors
             closeButton
             toastOptions={{ classNames: { toast: 'font-sans', title: 'font-semibold' } }}
