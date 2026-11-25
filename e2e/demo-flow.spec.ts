@@ -12,7 +12,9 @@ let appointmentCode = '';
 let requestCode = '';
 
 test.beforeAll(async ({ browser, request }) => {
-  await prepareDemoData(request);
+  const freeToday = await prepareDemoData(request);
+  // Check-in only works on the appointment day, so the flow needs a slot left today.
+  test.skip(freeToday === 0, 'No appointment slots left today (run again after midnight).');
   const context = await browser.newContext();
   page = await context.newPage();
   page.on('pageerror', (e) => console.log('[pageerror]', e.message));

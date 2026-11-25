@@ -29,13 +29,20 @@ export function todayStr(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-/** Fresh demo data, and make sure Dr. Ritu Bassi has bookable slots today at any hour. */
-export async function prepareDemoData(request: APIRequestContext): Promise<void> {
+/**
+ * Fresh demo data, and make sure Dr. Ritu Bassi has bookable slots today at (almost) any hour.
+ * Returns how many slots are still free today — 0 only in the last minutes before midnight.
+ */
+export async function prepareDemoData(request: APIRequestContext): Promise<number> {
   const admin = await apiToken(request, IDS.admin);
   await api(request, admin, 'POST', '/demo/reset');
   const student = await apiToken(request, IDS.student);
-  const slots = await api<{ available: boolean }[]>(request, student, 'GET', `/doctors/${IDS.doctor}/slots?date=${todayStr()}`);
-  if (slots.filter((s) => s.available).length >= 2) return;
+  const freeToday = async () =>
+    (await api<{ available: boolean }[]>(request, student, 'GET', `/doctors/${IDS.doctor}/slots?date=${todayStr()}`)).filter(
+      (s) => s.available,
+    ).length;
+  const free = await freeToday();
+  if (free >= 2) return free;
   const doctor = await apiToken(request, IDS.doctor);
   const current = await api<{ slotMinutes: number; consultationModes: string[] }>(request, doctor, 'GET', '/doctor/schedule');
   await api(request, doctor, 'PUT', '/doctor/schedule', {
@@ -43,6 +50,7 @@ export async function prepareDemoData(request: APIRequestContext): Promise<void>
     consultationModes: current.consultationModes,
     schedule: [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({ weekday, startTime: '00:00', endTime: '23:59' })),
   });
+  return freeToday();
 }
 
 /** Closes any open drawer/dialog (they make the rest of the page inert). */

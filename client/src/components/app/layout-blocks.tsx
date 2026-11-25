@@ -64,7 +64,7 @@ export function Panel({
   id?: string;
 }) {
   return (
-    <section id={id} className={cn('rounded-xl border bg-card shadow-xs', className)}>
+    <section id={id} className={cn('min-w-0 rounded-xl border bg-card shadow-xs', className)}>
       {(title || actions) && (
         <header className="flex items-start justify-between gap-3 border-b border-border/70 px-5 py-4">
           <div className="flex min-w-0 items-start gap-3">

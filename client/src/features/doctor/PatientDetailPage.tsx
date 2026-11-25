@@ -152,7 +152,7 @@ export default function PatientDetailPage() {
       <div className="grid gap-6 xl:grid-cols-3">
         <div className="min-w-0 xl:col-span-2">
           <Tabs defaultValue="visits" className="gap-4">
-            <TabsList className="bg-slate-200/60">
+            <TabsList className="scrollbar-none max-w-full justify-start overflow-x-auto bg-slate-200/60">
               <TabsTrigger value="visits" className="px-3">
                 <CalendarDays /> Visits ({visits.length})
               </TabsTrigger>

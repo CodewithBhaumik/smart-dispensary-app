@@ -18,7 +18,7 @@ test('chat message and video call between student and doctor', async ({ browser,
   const text = `Hello doctor, quick question about my medicines (${Date.now()})`;
   await student.getByPlaceholder(/message/i).fill(text);
   await student.getByRole('button', { name: 'Send message' }).click();
-  await expect(doctor.getByText(text)).toBeVisible();
+  await expect(doctor.getByText(text).first()).toBeVisible();
 
   // Doctor calls, student accepts.
   await doctor.getByRole('button', { name: /video call/i }).first().click();

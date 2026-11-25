@@ -48,7 +48,7 @@ export function ModeChips({ modes, className }: { modes: DoctorListItem['consult
 export function DoctorCard({ doctor: d }: { doctor: DoctorListItem }) {
   const line = availabilityLine(d);
   return (
-    <article className="group flex h-full flex-col rounded-xl border bg-card shadow-xs transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+    <article className="group flex h-full min-w-0 flex-col rounded-xl border bg-card shadow-xs transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div className="flex items-start gap-3.5">
           <UserAvatar user={d} size="lg" />

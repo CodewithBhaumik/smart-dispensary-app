@@ -48,7 +48,7 @@ export default function PatientsPage() {
               <Link
                 key={p.id}
                 to={`/doctor/patients/${p.id}`}
-                className="group flex flex-col gap-4 rounded-xl border bg-card p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none"
+                className="group flex min-w-0 flex-col gap-4 rounded-xl border bg-card p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none"
               >
                 <div className="flex items-start gap-3">
                   <UserAvatar user={p} size="lg" />

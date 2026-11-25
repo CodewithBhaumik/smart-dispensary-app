@@ -27,8 +27,10 @@ Four role-based workspaces share one live system:
 | Backend | Node.js 22, Express 5 (TypeScript via tsx), SQLite (better-sqlite3), Socket.IO 4, zod, bcryptjs, multer |
 | Testing | Vitest + supertest (API & socket tests), Playwright (end-to-end in Google Chrome) |
 
-Architecture, data model and workflow diagrams: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
-Presentation walkthrough: [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md).
+Documentation:
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (architecture, data model, workflow state machines) ·
+[`docs/API.md`](docs/API.md) (REST endpoints, business rules, realtime events) ·
+[`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) (presentation walkthrough).
 
 ---
 
@@ -57,8 +59,8 @@ npm run dev          # API on :4000 + Vite dev server on http://localhost:5173
 | `npm run demo` | Production build + single server on port 4000 (recommended for presenting) |
 | `npm run dev` | API (watch mode) + Vite dev server with proxy |
 | `npm run seed` | Wipes the database and reloads fresh demo data (dates re-anchored to today) |
-| `npm test` | API, workflow, socket and seed tests (Vitest) |
-| `npm run test:e2e` | Full browser end-to-end tests (Playwright, uses installed Chrome) |
+| `npm test` | 119 API, workflow, socket and seed-data tests (Vitest, in-memory SQLite) |
+| `npm run test:e2e` | Builds the app and runs the full presentation flow + a two-window video call in Chrome (Playwright) |
 | `npm run typecheck` | TypeScript checks for client and server |
 
 Environment variables (optional): `PORT` (default 4000), `DB_PATH` (SQLite file), `DATA_DIR` (database + uploads
@@ -92,6 +94,17 @@ other, then press **Video call** in Messages or on a video appointment. Browsers
 `localhost` or HTTPS, so for two different devices serve the app over HTTPS.
 
 ---
+
+## Testing
+
+* **Vitest + supertest** (`server/tests`, 119 tests): authentication and role guards, slot generation and every
+  booking conflict rule, reschedule/cancel/check-in rules, consultation → prescription → visit-summary flow, record
+  uploads, medicine-request lifecycle with exact stock arithmetic and duplicate-fulfilment protection, emergencies,
+  notifications, activity log, chat REST + real Socket.IO call signaling, and seed-data invariants.
+* **Playwright** (`e2e/`, 7 tests): the complete presentation flow across all four roles (book → check in →
+  consult → prescribe → request → fulfil → analytics → emergency), and a student ↔ doctor chat + WebRTC video call
+  in two browser windows using Chrome's fake camera. `npx playwright test --config playwright.dev.config.ts` runs the
+  same tests against an already running `npm run dev`.
 
 ## Project structure
 

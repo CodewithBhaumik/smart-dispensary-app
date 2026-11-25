@@ -161,7 +161,7 @@ export default function DoctorProfilePage() {
       </section>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+        <div className="min-w-0 space-y-6 lg:col-span-2">
           <Panel
             title="Availability · next 14 days"
             description="Pick a day to see open time slots and book."
@@ -220,7 +220,7 @@ export default function DoctorProfilePage() {
           </Panel>
         </div>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <Panel title="Planned leave" icon={CalendarOff}>
             {upcomingLeaves.length === 0 ? (
               <p className="text-sm text-muted-foreground">No leave planned in the coming weeks.</p>
