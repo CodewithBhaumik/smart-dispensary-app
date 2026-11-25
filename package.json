@@ -1,0 +1,29 @@
+{
+  "name": "smart-dispensary",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Dispensary - campus healthcare management platform (appointments, consultations, prescriptions, medicine requests, inventory, emergencies, chat & video consultations).",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server",
+    "demo": "npm run build && npm run start",
+    "seed": "npm run seed -w server",
+    "typecheck": "npm run typecheck -w client && npm run typecheck -w server",
+    "test": "npm run test -w server",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "latest",
+    "concurrently": "latest"
+  },
+  "engines": {
+    "node": ">=20.19"
+  }
+}
