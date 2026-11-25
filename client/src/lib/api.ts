@@ -46,8 +46,9 @@ export const tokenStore = {
   },
 };
 
-let unauthorizedHandler: (() => void) | null = null;
-export function setUnauthorizedHandler(fn: (() => void) | null) {
+/** Called with the token that was rejected, so a superseded token can be ignored. */
+let unauthorizedHandler: ((rejectedToken: string | null) => void) | null = null;
+export function setUnauthorizedHandler(fn: ((rejectedToken: string | null) => void) | null) {
   unauthorizedHandler = fn;
 }
 
@@ -99,7 +100,7 @@ async function request<T>(method: string, path: string, opts: RequestOptions = {
       /* not JSON */
     }
     if (res.status === 401 && !path.startsWith('/auth/login') && !path.startsWith('/auth/demo-login')) {
-      unauthorizedHandler?.();
+      unauthorizedHandler?.(token);
     }
     throw new ApiError(
       res.status,

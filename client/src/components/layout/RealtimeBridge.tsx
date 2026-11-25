@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { Notification } from '@shared/types';
-import { useAuth } from '@/hooks/use-auth';
-import { api } from '@/lib/api';
 import { useSocketEvent } from '@/lib/socket';
 
 let lastOwnMutationAt = 0;
@@ -13,7 +11,6 @@ let lastOwnMutationAt = 0;
 export function RealtimeBridge() {
   const qc = useQueryClient();
   const navigate = useNavigate();
-  const { user, switchToAccount, logout } = useAuth();
 
   // Remember when this tab last performed a mutation so we don't double-toast our own events.
   useEffect(() => {
@@ -40,20 +37,10 @@ export function RealtimeBridge() {
     });
   });
 
-  useSocketEvent('demo:reset', async () => {
-    try {
-      await api.get('/auth/me');
-    } catch {
-      try {
-        await switchToAccount(user.id);
-        navigate(`/${user.role}`);
-        toast.info('Demo data was reset in another window');
-      } catch {
-        await logout();
-      }
-      return;
-    }
-    await qc.invalidateQueries();
+  // Data was reseeded (possibly from another window). Stale sessions re-authenticate
+  // automatically in AuthProvider; here we only refresh every cached query.
+  useSocketEvent('demo:reset', () => {
+    void qc.invalidateQueries();
   });
 
   return null;

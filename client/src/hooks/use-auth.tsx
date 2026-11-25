@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AuthUser, LoginResponse } from '@shared/types';
 import { api, setUnauthorizedHandler, tokenStore } from '@/lib/api';
 import { queryClient } from '@/lib/query';
@@ -24,6 +24,9 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('loading');
   const [user, setUserState] = useState<AuthUser | null>(null);
+  const userRef = useRef<AuthUser | null>(null);
+  const reauthRef = useRef<Promise<void> | null>(null);
+  userRef.current = user;
 
   const clearSession = useCallback(() => {
     tokenStore.clear();
@@ -68,9 +71,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [clearSession]);
 
   useEffect(() => {
-    setUnauthorizedHandler(() => clearSession());
+    setUnauthorizedHandler((rejectedToken) => {
+      // A newer session already replaced the token that failed — nothing to do.
+      if (rejectedToken && rejectedToken !== tokenStore.get()) return;
+      if (reauthRef.current) return;
+      const current = userRef.current;
+      if (!current) {
+        clearSession();
+        return;
+      }
+      // Demo resets invalidate every session: quietly sign the same demo identity back in.
+      // Outside demo mode (or for non-demo accounts) this fails and the user is signed out.
+      reauthRef.current = api
+        .post<LoginResponse>('/auth/demo-login', { userId: current.id })
+        .then((session) => {
+          applySession(session);
+        })
+        .catch(() => clearSession())
+        .finally(() => {
+          reauthRef.current = null;
+        });
+    });
     return () => setUnauthorizedHandler(null);
-  }, [clearSession]);
+  }, [clearSession, applySession]);
 
   const login = useCallback(
     async (email: string, password: string) => {

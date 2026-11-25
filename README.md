@@ -104,7 +104,8 @@ other, then press **Video call** in Messages or on a video appointment. Browsers
 * **Playwright** (`e2e/`, 7 tests): the complete presentation flow across all four roles (book → check in →
   consult → prescribe → request → fulfil → analytics → emergency), and a student ↔ doctor chat + WebRTC video call
   in two browser windows using Chrome's fake camera. `npx playwright test --config playwright.dev.config.ts` runs the
-  same tests against an already running `npm run dev`.
+  same tests against an already running `npm run dev`. (Check-in only works on the appointment day, so the flow test
+  skips itself in the last few minutes before midnight when no slot is left today.)
 
 ## Project structure
 
