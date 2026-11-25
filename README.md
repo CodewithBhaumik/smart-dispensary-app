@@ -64,7 +64,19 @@ npm run dev          # API on :4000 + Vite dev server on http://localhost:5173
 | `npm run typecheck` | TypeScript checks for client and server |
 
 Environment variables (optional): `PORT` (default 4000), `DB_PATH` (SQLite file), `DATA_DIR` (database + uploads
-folder), `DEMO_MODE=false` (hide demo accounts / reset).
+folder), `DEMO_MODE=false` (hide demo accounts / reset), `TZ` (time zone used for slots and "today").
+
+### Deploying to Render (free)
+
+The repository includes a [`render.yaml`](render.yaml) blueprint that runs the whole app as one free web service.
+
+1. Sign in at <https://dashboard.render.com> with GitHub.
+2. **New → Blueprint**, pick this repository, then **Apply**. The first build takes about 3–5 minutes.
+3. Open the service URL (for example `https://smart-dispensary.onrender.com`).
+
+Free-tier notes: the service sleeps after 15 minutes without traffic (the next visit takes about a minute to wake),
+and the SQLite file lives on the instance disk, so demo data is re-seeded whenever the service restarts or redeploys.
+Video calls work across devices on the hosted URL because it is served over HTTPS.
 
 ---
 

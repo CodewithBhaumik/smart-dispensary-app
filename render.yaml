@@ -1,0 +1,22 @@
+# Render Blueprint: one free web service runs the whole app
+# (Express API + Socket.IO + the built React client, SQLite on the instance disk).
+# Dashboard → New → Blueprint → pick this repository → Apply.
+services:
+  - type: web
+    name: smart-dispensary
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/meta
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      # Appointment slots and "today" are computed in the server's local time.
+      - key: TZ
+        value: Asia/Kolkata
+      - key: DEMO_MODE
+        value: "true"
